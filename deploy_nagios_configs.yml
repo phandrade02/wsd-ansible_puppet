@@ -1,0 +1,21 @@
+- name: nagios_configurations
+  hosts: nagios
+  become: yes
+  tasks:
+    - name: Generate Nagios configuration for each NTP server
+      template:
+        src: nagios_host_template.j2
+        dest: /etc/nagios/conf.d/{{ item }}.cfg
+      with_items:
+        - app-vm1.fra1.internal
+        - db-vm1.fra1.db
+        - web-vm1.fra1.web
+      vars:
+        app-vm1_fra1_internal: "192.168.0.2"
+        db-vm1_fra1_db: "192.168.0.3"
+        web-vm1_fra1_web: "192.168.0.4"
+
+    - name: restart_nagios_svc
+      service:
+        name: nagios
+        state: restarted
