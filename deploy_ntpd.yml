@@ -1,0 +1,15 @@
+- name: Deploy ntpd package to servers
+  hosts: ntp_servers
+  become: yes
+  tasks:
+    - name: Install ntpd package
+      apt:
+        name: ntp
+        state: present
+      notify: restart ntpd
+
+  handlers:
+    - name: restart ntpd
+      service:
+        name: ntp
+        state: restarted
